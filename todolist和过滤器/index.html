@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<!--<-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+		<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		
+		<script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>	
+		<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+		<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<style>
+			body{
+				font-size: 18px;
+			}
+			[v-cloak] { display: none }
+		</style>
+		
+
+	</head>
+	<body>
+		<div class="container" id="app" style="padding-top: 15px;" v-cloak>
+			
+			<br />
+		    <div class="row">
+		    	<div class="col-lg-6">
+					<div class="col-lg-5">
+						<div class="btn-group">
+			    			<button class="btn btn-primary" type="button" data-toggle="modal" data-target=".bs-example-modal-lg">新增</button>
+						</div>
+						<div class="btn-group">
+							<button class="btn btn-success" type="button" data-toggle="modal" data-target=".bs-example-modal-lg">修改</button>						
+						</div>
+						<div class="btn-group">	
+						    <button class="btn btn-danger" type="button">删除</button>
+						</div>
+					</div>
+					<div class="col-lg-7">
+						<div class="btn-group">
+							<div class="input-group ">
+							  <span class="input-group-addon glyphicon glyphicon-search"></span>
+							  <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
+							</div>
+						</div>
+					</div>
+					
+					
+		    	</div>
+		    </div>
+		    <br />
+			<table class="table table-striped">
+			  <tr>
+			  	<th>选择</th>
+			  	<th>姓名</th>
+			  	<th>性别</th>
+			  	<th>年龄</th>
+			  </tr>
+			  <tr v-for="(item,index) in tablelist" v-bind:key="index">
+			  	<td>
+			  		<input type="checkbox" >
+			  	</td>
+			  	<td>{{item.name}}</td>
+			  	<td>{{item.sex}}</td>
+			  	<td>{{item.age}}</td>
+			  </tr>
+			</table>
+			
+			
+			<!-- Large modal -->
+			<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+			  <div class="modal-dialog modal-lg" role="document">
+			    <div class="modal-content">
+			    	<div class="modal-header">
+			          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+			          <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+			        </div>
+			        <div class="modal-body">
+			        	<form class="form-horizonta">
+					      		<div class="form-group">
+								    <label for="exampleInputName2">姓名</label>
+								    <input type="text" class="form-control" placeholder="请输入姓名">
+								</div>
+					      		<div class="form-group">
+								    <label for="exampleInputName2">性别</label>
+								    <input type="text" class="form-control" placeholder="请输入性别">
+								</div>
+					      		<div class="form-group">
+								    <label for="exampleInputName2">年龄</label>
+								    <input type="text" class="form-control" placeholder="请输入年龄">
+								</div>
+					    </form>
+			        </div>
+			        <div class="modal-footer">
+			          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			          <button type="button" class="btn btn-primary">保存</button>
+			        </div>
+			      
+			    </div>
+			  </div>
+			</div>
+			
+			
+		</div>
+		<br />
+		<br />
+		<br />
+	</body>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+	
+	<script type="text/javascript">
+	var vm = new Vue({
+			el:"#app",
+			data:{
+				tablelist:[
+				  {name:"张三",sex:"男",age:"23"},{name:"小红",sex:"女",age:"20"},{name:"小明",sex:"男",age:"26"},{name:"小王",sex:"男",age:"18"},{name:"小王",sex:"男",age:"18"}
+				]
+			},
+			methods:{
+				
+			}
+		})
+	</script>
+</html>
