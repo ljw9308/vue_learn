@@ -198,6 +198,10 @@
 				},
 				//删除
 				del:function(){
+					if(this.getCheckedCol()){
+						alert("请至少选择一个选项");
+						return;
+					};
 				    this.tablelist = this.tablelist.filter(function(item,index,arr){
 				    	return item.value == false
 				    })
