@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<title>组件</title>
 		<!--<-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-		<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link rel="stylesheet" href="../script/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		
 		<!--<script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>	
 		<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
@@ -24,58 +24,99 @@
 			<h4 class="text-success">局部组件</h4>
 			<local-compoent></local-compoent>
 
-			<h4 class="text-success">text/x-template 类型</h4>
+			<h4 class="text-success">组件模板定义方式一</h4>
 			<script-compoent></script-compoent>
+			<h4 class="text-success">组件模板定义方式二</h4>
+			<compoent-t></compoent-t>
+			
+			
 			<p class="bg-danger" style="padding: 15px;">
 				<strong>data选项:</strong>data必须是函数,且必须要有return值(对象). <br>	
-				<strong>组件根元素:</strong>组件必须要有一个根元素. <br>	
+				<strong>组件根元素:</strong>组件必须要有一个根元素(例如:父组件的parent_wrap元素) <br>	
 				<strong>组件命名:</strong> js中可以使用 	<mark>	camelCase (驼峰式命) </mark>和 	<mark>	kebab-case (短横线分隔式命名) </mark>;
 							  HTML 中必须使用		<mark>	kebab-case (短横线分隔式命名) </mark>
 			</p>
 			<br>		
-			<h3 class="text-info">父子组件通信及兄弟组件通信</h3>
 			
-			<p class="text-primary">父&nbsp亲&nbsp&nbsp:钱包(<u>100</u>)元 ;
-			    <div class="btn-group">
-			 		<button class="btn btn-default">给大儿子50元</button>
-			 	</div>
-				<div class="btn-group">
-			 		<button class="btn btn-default" >给小儿子50元</button>	
-			 	</div>
-			</p>
-			<p class="text-warning">大儿子:钱包(<u>0</u>)元;
-			    <div class="btn-group">
-			    	<button class="btn btn-default" >孝敬父亲50元</button>
-			    </div>
-			 	<div class="btn-group">
-			 		<button class="btn btn-default" >再孝敬父亲10元</button>
-			 	</div>
-			 	<div class="btn-group">
-			 		<button class="btn btn-default" >借给兄弟10元</button>
-			 	</div>
-			</p>
-			<p class="text-muted">小儿子:钱包(<u>0</u>)元;
-				<div class="btn-group">
-			 		<button class="btn btn-default" >孝敬父亲50元</button>
-			 	</div>
-			 	<div class="btn-group">
-			 		<button class="btn btn-default" >借给兄弟10元</button>
-			 	</div>
-			 </p>
-			<p class="bg-danger" style="padding: 15px;">
-				<strong>父传子:</strong> prop属性,this.$refs.child.fn;<br>
-				<strong>子传父:</strong> 接受父传的function,父传对象,自定义事件从子组件向父组件中传递数据;<br>
-				<strong>兄弟通信:</strong>接受父传的function(同父组件),new Vue({});
-			</p>
+			<h3 class="text-info">父子组件通信及兄弟组件通信</h3>
+			<parent-compoent> </parent-compoent>
+						
 			<h3 class="text-info">动态组件(is)</h3>
 			<h3 class="text-info">混入(mixins)</h3>
+			
 		</div>
 		
+		<!--组件的创建方式模板start-->
 		<script type="text/x-template" id="script">
 		  <p>{{text}}</p>
 		</script>
+		
+		<template id="compoent4">
+			<div>{{text}}</div>
+		</template>
+		<!--组件的创建方式模板end-->
+		
+		<!--父组件的模板start-->
+		<template id="parent">
+			<div class="parent_wrap">
+				<p class="text-primary">父&nbsp亲&nbsp&nbsp:钱包(<u>{{money}}</u>)元 ;
+				    <div class="btn-group">
+				 		<button class="btn btn-default">给大儿子50元</button>
+				 	</div>
+					<div class="btn-group">
+				 		<button class="btn btn-default" >给小儿子50元</button>	
+				 	</div>
+				</p>
+				
+				<child1 ></child1>
+				
+				<child2></child2>
+				
+				<p class="bg-danger" style="padding: 15px;">
+					<strong>父传子:</strong> prop属性,this.$refs.child.fn;<br>
+					<strong>子传父:</strong> 接受父传的function,父传对象,自定义事件从子组件向父组件中传递数据;<br>
+					<strong>兄弟通信:</strong>接受父传的function(同父组件),new Vue({});
+				</p>
+			</div>
+		</template>
+		<!--父组件的模板end-->
+		
+			
+		<!--子组件的模板start-->
+		<template id="child_1">
+			<div>
+				<p class="text-warning">大儿子:钱包(<u>0</u>)元;
+				    <div class="btn-group">
+				    	<button class="btn btn-default" >孝敬父亲50元</button>
+				    </div>
+				 	<div class="btn-group">
+				 		<button class="btn btn-default" >再孝敬父亲10元</button>
+				 	</div>
+				 	<div class="btn-group">
+				 		<button class="btn btn-default" >借给兄弟10元</button>
+				 	</div>
+				</p>
+			</div>
+		</template>
+		<!--子组件的模板end-->
+		
+		<!--子组件的模板start-->
+		<template id="child_2">
+			<div>
+				<p class="text-muted">小儿子:钱包(<u>0</u>)元;
+					<div class="btn-group">
+				 		<button class="btn btn-default" >孝敬父亲50元</button>
+				 	</div>
+				 	<div class="btn-group">
+				 		<button class="btn btn-default" >借给兄弟10元</button>
+				 	</div>
+				 </p>
+			</div>
+		</template>
+		<!--子组件的模板end-->
+		
 	</body>
-	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+	<script src="../script/vue.js"></script>
 	<script type="text/javascript">
 		//全局组件
 		Vue.component('global-component', {
@@ -92,6 +133,61 @@
 			},
 			template:"<div>{{text}}</div>"
 		}
+		
+		//组件模板    script标签
+		var scriptCompoent = {
+			data:function(){
+				return {text:"我是组件，模板定义在 script 标签 ，type='text/x-template'"}
+			},
+			template:"#script"
+		}
+		
+		//组件模板  template标签
+		var compoentT = {
+			data:function(){
+				return {text:"我是组件，模板定义在 template 标签"}
+			},
+			template:"#compoent4"
+		}
+		
+
+		//1号子组件
+		var child_1 = {
+			data:function(){
+				return {money:"0"}
+			},
+			template: "#child_1"
+		};
+		
+		//2号子组件
+		var child_2 = {
+			data:function(){
+				return {money:"0"}
+			},
+			template: "#child_2"
+		};
+		
+		//父组件
+		var parentCompoent = {
+			data:function(){
+				return {money:"100"}
+			},
+			template: "#parent",
+			components:{
+				"child1": child_1,   //子组件
+				"child2": child_2   //子组件
+			}
+		};
+		
+		var vm = new Vue({
+			el:"#app",
+			components:{
+				"localCompoent": localCompoent,   //局部组件
+				"script-compoent": scriptCompoent,  //js标签模板
+				"compoentT": compoentT,   //template模板
+				"parentCompoent": parentCompoent   //父组件
+			}
+		})
 		
 		
 //		var myMixin = {
@@ -110,17 +206,5 @@
 //		})
 //		var component = new Component() // -> "hello from mixin!"
 		
-		var vm = new Vue({
-			el:"#app",
-			components:{
-				"localCompoent": localCompoent,
-				"script-compoent": {
-					data: function(){
-						return {text: '我是在 JavaScript 标签里使用 text/x-template 类型'}
-					},
-					template: "#script"
-				}
-			}
-		})
 	</script>
 </html>
