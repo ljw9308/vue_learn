@@ -59,18 +59,18 @@
 		<!--父组件的模板start-->
 		<template id="parent">
 			<div class="parent_wrap">
-				<p class="text-primary">父&nbsp亲&nbsp&nbsp:钱包(<u><strong>{{allMoney}}</strong></u>)元 ;
+				<p class="text-primary">父&nbsp亲&nbsp&nbsp:钱包(<u><strong>{{money.pM}}</strong></u>)元 ;
 				    <div class="btn-group">
-				 		<button class="btn btn-default" @click="giveChild1('50')">给大儿子50元</button>
+				 		<button class="btn btn-default" @click="sendChild1('50')">给大儿子50元</button>
 				 	</div>
 					<div class="btn-group">
-				 		<button class="btn btn-default" @click="giveChild2('50')">给小儿子50元</button>	
+				 		<button class="btn btn-default" @click="sendChild2('50')">给小儿子50元</button>	
 				 	</div>
 				</p>
 				
-				<child1 :childmoney="child1M"></child1>
+				<child1 ref="child1" :slefmoney="money" :parentcallback="sendChld1Call" :child2callback="child2callback"></child1>
 				
-				<child2 ref="child2"></child2>
+				<child2 ref="child2" @callparent="sendChld1Call"></child2>
 				
 				<p class="bg-danger" style="padding: 15px;">
 					<strong>父传子:</strong> 1. prop属性,	2. this.$refs.child.fn;<br>
@@ -85,15 +85,15 @@
 		<!--子组件的模板start-->
 		<template id="child_1">
 			<div>
-				<p class="text-warning">大儿子:钱包(<u><strong>{{money}}</strong></u>)元;
+				<p class="text-warning">大儿子:钱包(<u><strong>{{slefmoney.cM}}</strong></u>)元;
 				    <div class="btn-group">
-				    	<button class="btn btn-default" >孝敬父亲50元</button>
+				    	<button class="btn btn-default" @click="sendParentF(50)">孝敬父亲50元</button>
 				    </div>
 				 	<div class="btn-group">
-				 		<button class="btn btn-default" >再孝敬父亲10元</button>
+				 		<button class="btn btn-default" @click="sendParentO(10)">再孝敬父亲10元</button>
 				 	</div>
 				 	<div class="btn-group">
-				 		<button class="btn btn-default" >借给兄弟10元</button>
+				 		<button class="btn btn-default" @click="sendChild2(10)">借给兄弟10元</button>
 				 	</div>
 				</p>
 			</div>
@@ -105,10 +105,10 @@
 			<div>
 				<p class="text-muted">小儿子:钱包(<u><strong>{{slefMoney}}</strong></u>)元;
 					<div class="btn-group">
-				 		<button class="btn btn-default" >孝敬父亲50元</button>
+				 		<button class="btn btn-default" @click="sendparent(50)">孝敬父亲50元</button>
 				 	</div>
 				 	<div class="btn-group">
-				 		<button class="btn btn-default" >借给兄弟10元</button>
+				 		<button class="btn btn-default" @click="sendchild1(10)">借给兄弟10元</button>
 				 	</div>
 				 </p>
 			</div>
@@ -150,22 +150,65 @@
 			template:"#compoent4"
 		}
 		
-
+        let Hub = new Vue(); //创建事件中心    兄弟组件通信
+         
 		//1号子组件
 		var child_1 = {
-			data:function(){
-				return{
-					slefMoney: 0
+			props:{
+				"slefmoney":{
+					type: Object,
+					default: function () {
+				        return { pM: 100,cM: 0 }
+				    }
+				},
+				"parentcallback":{
+					type: Function,
+					default: function () { }
+				},
+				"child2callback":{
+					type: Function,
+					default: function () { }
+				},
+			},
+			template: "#child_1",
+			methods:{
+				sendParentF:function(val){
+					var all = this.slefmoney.cM - val;
+					if(all < 0){
+						alert("余额不足");
+						return;
+					};
+					var parent = this.$parent;
+					parent.money.cM = all;
+					this.parentcallback(val)
+				},
+				sendParentO:function(val){
+					var slefmoney = this.slefmoney;
+					var all = slefmoney.cM - Number(val);
+					if(all < 0){
+						alert("余额不足");
+						return;
+					};
+					this.slefmoney.cM = all;
+					var pm = slefmoney.pM;
+					this.slefmoney.pM = pm + Number(val);
+				},
+				sendChild2:function(val){
+					var slefmoney = this.slefmoney;
+					var all = slefmoney.cM - Number(val);
+					if(all < 0){
+						alert("余额不足");
+						return;
+					};
+					this.slefmoney.cM = all;
+					this.child2callback(val);
 				}
 			},
-			props:["childmoney"],
-			template: "#child_1",
-			computed:{
-				money:function(){
-					var all = Number(this.childmoney.val) + Number(this.slefMoney);
-					this.slefMoney = all;
-					return all;
-				}
+			created:function(){
+				function callback(val){
+					this.slefmoney.cM = this.slefmoney.cM + Number(val);
+				};
+				Hub.$on("changechild",callback.bind(this))
 			}
 		};
 		
@@ -178,17 +221,37 @@
 			methods:{
 				accept:function(val){
 					this.slefMoney = this.slefMoney + Number(val);
+				},
+				sendparent:function(val){
+					var all = this.slefMoney - val;
+					if(all < 0){
+						alert("余额不足");
+						return;
+					};
+					this.slefMoney = this.slefMoney - Number(val);
+					this.$emit("callparent",val)
+				},
+				sendchild1:function(val){
+					var all = this.slefMoney - val;
+					if(all < 0){
+						alert("余额不足");
+						return;
+					};
+					this.slefMoney = this.slefMoney - Number(val);
+					Hub.$emit("changechild",val)
 				}
 			}
+			
 		};
 		
 		//父组件
 		var parentCompoent = {
 			data:function(){
 				return {
-					allMoney: "100",
-					child1M: {val: 0},
-					child2M: "50"
+					money:{
+						pM: 100,
+						cM: 0
+					}
 				}
 			},
 			template: "#parent",
@@ -197,26 +260,34 @@
 				"child2": child_2   //子组件
 			},
 			methods:{
-				giveChild1:function(val){
-					var all = this.allMoney - val;
+				sendChild1:function(val){   //通知子组件1
+					var all = this.money.pM - val;
 					if(all < 0){
 						alert("余额不足");
 						return;
 					}
-					this.allMoney = all;
-					this.child1M = {val:val};
+					this.money.pM = all;
+					var child1 = this.$refs.child1;  //$refs 找到子组件的引用,
+					this.money.cM = (child1.slefmoney.cM + Number(val));
 				},
-				giveChild2:function(val){
-					var all = this.allMoney - val;
+				sendChild2:function(val){  //通知子组件2
+					var all = this.money.pM - val;
 					if(all < 0){
 						alert("余额不足");
 						return;
 					}
-					this.allMoney = all;
+					this.money.pM = all;
 					var child2 = this.$refs.child2;    //$refs 找到子组件的引用,调用accept方法  
 					child2.accept(val)
-					
 				},
+				sendChld1Call: function(val){  //接受子组件1的调用
+					var allMoney = this.money.pM;
+					this.money.pM = Number(allMoney) + Number(val);
+				},
+				child2callback: function(val){  //组件1改变组件2
+					var child2 = this.$refs.child2;
+					child2.slefMoney = child2.slefMoney + Number(val);
+				}
 			}
 		};
 		
