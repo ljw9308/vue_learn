@@ -59,23 +59,23 @@
 		<!--父组件的模板start-->
 		<template id="parent">
 			<div class="parent_wrap">
-				<p class="text-primary">父&nbsp亲&nbsp&nbsp:钱包(<u>{{allMoney}}</u>)元 ;
+				<p class="text-primary">父&nbsp亲&nbsp&nbsp:钱包(<u><strong>{{allMoney}}</strong></u>)元 ;
 				    <div class="btn-group">
 				 		<button class="btn btn-default" @click="giveChild1('50')">给大儿子50元</button>
 				 	</div>
 					<div class="btn-group">
-				 		<button class="btn btn-default" >给小儿子50元</button>	
+				 		<button class="btn btn-default" @click="giveChild2('50')">给小儿子50元</button>	
 				 	</div>
 				</p>
 				
 				<child1 :childmoney="child1M"></child1>
 				
-				<child2></child2>
+				<child2 ref="child2"></child2>
 				
 				<p class="bg-danger" style="padding: 15px;">
-					<strong>父传子:</strong> prop属性,this.$refs.child.fn;<br>
-					<strong>子传父:</strong> 接受父传的function,父传对象,自定义事件从子组件向父组件中传递数据;<br>
-					<strong>兄弟通信:</strong>接受父传的function(同父组件),new Vue({});
+					<strong>父传子:</strong> 1. prop属性,	2. this.$refs.child.fn;<br>
+					<strong>子传父:</strong> 1. 接受父传的function, 2. 父传对象, 3. 自定义事件从子组件向父组件中传递数据;<br>
+					<strong>兄弟通信:</strong>1. 接受父传的function(同父组件), 2. new Vue({});
 				</p>
 			</div>
 		</template>
@@ -85,7 +85,7 @@
 		<!--子组件的模板start-->
 		<template id="child_1">
 			<div>
-				<p class="text-warning">大儿子:钱包(<u>{{money}}</u>)元;
+				<p class="text-warning">大儿子:钱包(<u><strong>{{money}}</strong></u>)元;
 				    <div class="btn-group">
 				    	<button class="btn btn-default" >孝敬父亲50元</button>
 				    </div>
@@ -101,9 +101,9 @@
 		<!--子组件的模板end-->
 		
 		<!--子组件的模板start-->
-		<template id="child_2">
+		<template id="child_2"> 
 			<div>
-				<p class="text-muted">小儿子:钱包(<u>0</u>)元;
+				<p class="text-muted">小儿子:钱包(<u><strong>{{slefMoney}}</strong></u>)元;
 					<div class="btn-group">
 				 		<button class="btn btn-default" >孝敬父亲50元</button>
 				 	</div>
@@ -155,15 +155,14 @@
 		var child_1 = {
 			data:function(){
 				return{
-					slefMoney:0
+					slefMoney: 0
 				}
 			},
 			props:["childmoney"],
 			template: "#child_1",
 			computed:{
 				money:function(){
-					console.log(this.childmoney,this.slefMoney)
-					var all = Number(this.childmoney) + Number(this.slefMoney);
+					var all = Number(this.childmoney.val) + Number(this.slefMoney);
 					this.slefMoney = all;
 					return all;
 				}
@@ -173,9 +172,14 @@
 		//2号子组件
 		var child_2 = {
 			data:function(){
-				return {money:"0"}
+				return {slefMoney: 0}
 			},
-			template: "#child_2"
+			template: "#child_2",
+			methods:{
+				accept:function(val){
+					this.slefMoney = this.slefMoney + Number(val);
+				}
+			}
 		};
 		
 		//父组件
@@ -183,7 +187,7 @@
 			data:function(){
 				return {
 					allMoney: "100",
-					child1M: "0",
+					child1M: {val: 0},
 					child2M: "50"
 				}
 			},
@@ -200,8 +204,19 @@
 						return;
 					}
 					this.allMoney = all;
-					this.child1M = val;
-				}
+					this.child1M = {val:val};
+				},
+				giveChild2:function(val){
+					var all = this.allMoney - val;
+					if(all < 0){
+						alert("余额不足");
+						return;
+					}
+					this.allMoney = all;
+					var child2 = this.$refs.child2;    //$refs 找到子组件的引用,调用accept方法  
+					child2.accept(val)
+					
+				},
 			}
 		};
 		
