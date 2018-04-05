@@ -42,7 +42,22 @@
 			<parent-compoent> </parent-compoent>
 						
 			<h3 class="text-info">动态组件(is)</h3>
-			<h3 class="text-info">混入(mixins)</h3>
+			<div>
+				<div class="btn-group">
+					<button class="btn btn-success" @click="switchCompoent('localCompoent')">组件A</button>
+				</div>
+				<div class="btn-group">
+					<button class="btn btn-warning" @click="switchCompoent('compoentT')">组件B</button>
+				</div>
+				<div class="view" style="margin: 15px 0;">
+				    <keep-alive>
+						<component :is="currentView"></component>				    
+				    </keep-alive>
+				</div>
+				<p class="bg-danger" style="padding: 15px;">
+					通过使用保留的 component 元素，并对其 is 特性进行动态绑定，你可以在 <mark> 同一个挂载点</mark> 动态切换多个组件
+				</p>
+			</div>
 			
 		</div>
 		
@@ -293,11 +308,19 @@
 		
 		var vm = new Vue({
 			el:"#app",
+			data:{
+				currentView:"localCompoent"
+			},
 			components:{
 				"localCompoent": localCompoent,   //局部组件
 				"script-compoent": scriptCompoent,  //js标签模板
 				"compoentT": compoentT,   //template模板
 				"parentCompoent": parentCompoent   //父组件
+			},
+			methods:{
+				switchCompoent:function(val){
+					this.currentView = val;
+				}
 			}
 		})
 		

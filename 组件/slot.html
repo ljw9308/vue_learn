@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>插槽</title>
+		<!--<-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+		<link rel="stylesheet" href="../script/bootstrap.min.css">
+		
+		<!--<script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>	
+		<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+		<!--<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
+
+	    <style type="text/css">
+	    	body{font-size: 16px;}
+	    	.note{font-size: 12px; color: #666;margin: 0;}
+	    	.list-unstyled .col-sm-7{padding-right: 0;}
+	    	.list-unstyled .style .col-sm-7{overflow: hidden; text-overflow: ellipsis;word-break: break-all;white-space: nowrap;}
+	    	.list-unstyled .style .note{line-height: 23px;}
+	    </style>
+	</head>
+	<body>
+		<div id="app" class="container" style="padding-top: 15px;">
+			<h3 class="text-info">插槽</h3>
+			<h4 class="text-info">单个插槽</h4>
+			<div style="margin-bottom: 15px;">
+				<div class="btn-group">
+					<button class="btn" @click="set()" :class="show ? 'btn-danger' : 'btn-primary'">
+						 <span v-if="show">取消父组件传入分发内容</span>
+						 <span v-else>父组件传入分发内容</span>
+					</button>
+				</div>
+			</div>
+			<child>
+				<p v-if="show">父组件的data属性 show：{{show}}</p>
+			</child>
+			
+			<br />
+			<h4 class="text-success">作用域插槽</h4>
+			<div class="row">
+				<div class="pull-left" style="margin-right: 50px;">
+					<h4 class="text-warning" style="padding-left: 15px;">列表风格1</h4>
+					<list>
+						<li class="clearfix list-group-item" slot-scope="props">
+							<div class="col-sm-7">
+								<p>{{props.itemp.text}}</p>
+								<p class="note">{{props.itemp.from}}</p>
+							</div>
+							<div class="col-sm-5">
+								<img :src="props.itemp.src" alt="" class="img-responsive img-rounded"/>
+							</div>
+						</li>
+					</list>
+				</div>
+				<div class="pull-left">
+					<h4 class="text-warning" style="padding-left: 15px;">列表风格2</h4>
+					<list>
+						<li class="clearfix style list-group-item" slot-scope="props">
+							<p class="col-sm-7">{{props.itemp.text}}</p>
+							<p class="col-sm-5 note text-center">{{props.itemp.from}}</p>
+						</li>
+					</list>
+				</div>
+			</div>
+			
+			<p class="bg-danger" style="padding: 15px;">
+				作用域插槽的作用：我们知道<mark>插槽slot</mark>是处在<mark>子组件作用域</mark>里的，
+				而<mark>插槽模板</mark>是处在<mark>父组件作用域</mark>里的。
+				<br />如果想在插槽模板里使用子组件的数据或props，可以在<mark>slot标签上通过 :itemp=”item”发射一个数据</mark>（itemp是自定义属性，item是数据），<br />
+				在slot模板上通过<mark>slot-scope=”props”接收数据</mark>（props是随便一个自定义属性值，它会自动获取slot标签上的自定义属性的值），至此就可以在slot模板中通过props.itemp来调用发射过来的数据item了。
+			</p>
+			
+			
+			
+		</div>
+		
+		<template id="childT">
+			<div>
+				<p>我是子组件</p>
+				<slot>父元素没有分发内容的时候显示</slot>
+			</div>
+			
+		</template>
+		
+		<template id="listView">
+			<div>
+				<ul style="width: 300px;" class="list-unstyled list-group">
+					<slot v-for="item in datalist" :itemp="item"></slot>
+				</ul>
+			</div>
+		</template>
+		
+	</body>
+	<script src="../script/vue.js"></script>
+	<script type="text/javascript">
+	    
+	    var child = {
+	    	template:"#childT"
+	    }
+	    
+	    var list = {
+	    	data: function(){
+	    		return {
+	    			datalist:[
+	    				{text:"今年国企员工工资要调整？改革细则正在路上",from:"经济观察报",src:"images/img1.jpg"},
+	    				{text:"怕啥来啥！中国涉500亿美元重拳反击，美国网民开启诉苦模式",from:"人民网",src:"images/img2.jpg"},
+	    				{text:"中方贸易反击超预期，美国阵脚有点乱了",from:"广州日报",src:"images/img3.jpg"},
+	    				{text:"中美贸易战升级，欧盟：不支持违反WTO规则的贸易措施",from:"第一财经",src:"images/img4.jpg"}
+	    			]
+	    		}
+	    	},
+	    	template:"#listView"
+	    }
+	    
+		var vm = new Vue({
+			el:"#app",
+			data:{
+				show: true
+			},
+			components:{
+				child: child,
+				list: list
+			},
+			methods:{
+				set:function(){
+					this.show = !this.show
+				}
+			}
+		})
+		
+
+	</script>
+</html>
