@@ -1,5 +1,5 @@
-# vue_learn
-vue学习笔记
+
+# vue学习笔记简易demo
 ## 目录
 * 第一部分 
     * [vue和mvvm](https://mysucceed.github.io/vue_learn/vue%E5%92%8Cmvvm/)
