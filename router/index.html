@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>路由</title>
+		<!--<-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+		<link rel="stylesheet" href="../script/bootstrap.min.css">
+		
+		<!--<script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>	
+		<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+		<!--<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
+
+	    <style type="text/css">
+	    	body{font-size: 16px;}
+	    </style>
+	</head>
+	<body>
+		<div id="app" class="container" style="padding-top: 15px;">
+			<h3 class="text-info">路由</h3>
+			<div class="btn-group">
+				<router-link :to="'/foo/马燕/0304'">
+					<button class="btn btn-info">注册</button>
+				</router-link>
+			</div>
+			<div class="btn-group">
+				<router-link :to="'/bar/李建卫/0802'">
+					<button class="btn btn-primary">登录</button>
+				</router-link>
+			</div>
+			<br />
+			<br />
+			<div class="panel">
+				<router-view></router-view>
+			</div>
+			<p class="bg-danger" style="padding: 15px;">
+				
+			</p>
+		</div>
+		
+		<template id="A">
+			<div>
+				<p>我是注册组件  <br> 路由参数  {{this.$route.params}} </p>
+				<p>嵌套路由子路由</p>
+				<button class="btn btn-info" @click="child">子路由</button>
+				<router-view></router-view>
+			</div>
+			
+		</template> 
+		
+		<template id="B">
+			<p>我是登录组件  <br> 路由参数  {{this.$route.params}}</p>
+		</template>
+		
+	</body>
+	<script src="../script/vue.js"></script>
+	<script src="../script/vue-router.js"></script>
+	<script type="text/javascript">
+		var componentA = {
+			template:"#A",
+			methods:{
+				child:function(){
+					var name = this.$route.params.name;
+					var id = this.$route.params.id;
+					router.push({ name: 'child', params: { name: name, id: id}})
+				}
+			}
+		};
+		var componentB = {
+			template:"#B"
+		};
+		var componentC = {
+			template:"<p>我是子路由</p>"
+		};
+		//实例化路由对象
+		const router = new VueRouter({
+		  routes:[
+		  		  { path: '/', redirect: '/foo/马燕/0304' },
+				  { path: '/foo/:name/:id', component: componentA,
+				  	children:[
+				  		{ name:"child",path: '/foo/:name/:id/child', component: componentC },
+				  	]
+				  },
+				  { path: '/bar/:name/:id', component: componentB }
+				]
+		});
+		
+		router.beforeEach(function(to,from,next){
+			console.log(to,from)
+			next();
+		})
+		var vm = new Vue({
+			el:"#app",
+			data:{
+				
+			},
+			router: router 
+		})
+	</script>
+</html>
