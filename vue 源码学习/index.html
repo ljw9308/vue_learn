@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <p>
+		{{message}}
+    </p>
+    内容：
+    <div class="main">
+        {{main}}
+    </div>
+	<!-- <my-div></my-div>		 -->
+</div>
+</body>
+<script type="text/javascript">
+var obj = {
+	name:"m",
+	template:"<div> hahah </div>"
+};
+
+// Vue.component("my-div",obj)
+
+
+var vm = new Vue({
+	el:"#app",
+	data:{
+		message:"源码我来了",
+		main:"hahha "
+	},
+	// components:{
+	// 	"my-div":obj
+	// }
+	beforeCreate:function () {
+		console.log(0)
+	}
+})
+console.log(Vue)
+console.log(vm)
+
+</script>
+</html>
