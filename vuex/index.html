@@ -9,28 +9,57 @@
 <body>
 	<div id="app">
 		<p>
-			购物车数量：{{num}}
+			购物车数量：{{num}};
+			<br />
+			mapSate： {{count}};
+			<br />
+			getter: {{countFullName}};
 		</p>
 		<button @click="addShopCar(1)">购买1件</button>
 		<button @click="addShopCar(5)">购买5件</button>
+		<button @click="addShopCarAsyn(5)">{{btnC}}</button>
 	</div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
 <script src="https://unpkg.com/vuex@2.0.0/dist/vuex.js"></script>
 <script type="text/javascript">
 	
-	//vuex 
+	//store
 	const store = new Vuex.Store({
+		//类似data数据
 		state:{
-			count:0
+			count:0,
+			btn:"异步购买"
 		},
+		getters:{
+			countFullName: function(state,getters){
+				return `${state.count}元`;
+			}
+		},
+		//类似methods 同步
 		mutations:{
 			updateConunt:function(state,data){
 				state.count+=data;
+			},
+			//更新btn的内容
+			updateBtn:function(state,data){
+				state.btn = data;
+			}
+		},
+		//类似methods 异步
+		actions:{
+			updateCountAsyn:function(context,data){
+				context.commit('updateBtn','购买中,请稍后...')	
+				setTimeout(function(){
+					context.commit('updateConunt',data);
+					context.commit('updateBtn','异步购买')
+				},2000)
 			}
 		}
 	})
-	console.log(store)
+	
+	//mapState 
+	const mapState = Vuex.mapState;
 	
 	//vue
 	new Vue({
@@ -41,12 +70,22 @@
 		computed:{
 			num: function(){
 				return this.$store.state.count
+			},
+			...mapState(['count']),
+			countFullName: function(){
+				return this.$store.getters.countFullName
+			},
+			btnC:function(){
+				return this.$store.state.btn
 			}
 		},
 		store:store,
 		methods:{
 			addShopCar:function(data){
 				this.$store.commit('updateConunt',data)	
+			},
+			addShopCarAsyn:function(data){
+				this.$store.dispatch('updateCountAsyn',data)
 			}
 		}
 	})
